@@ -99,7 +99,7 @@ export default function App() {
             </View>
           ))}
         </View>
-        <Text style={styles.titulo}>Criado pelo seu namorado: Juliano</Text>
+        <Text style={styles.titulo}>Create by: @Devsntosx71</Text>
       </View>
     </ImageBackground>
   );
@@ -161,13 +161,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: width * 0.02,
+    
+    borderRadius: width * 0.05,
     margin: width * 0.01, // Reduzi a margem
     padding: width * 0.04, // Aumentei o padding
     backgroundColor: 'rgba(255, 105, 180, 0.7)',
   },
   textoBotao: {
-    fontSize: width * 0.05,
+    fontSize: width * 0.10,
     color: '#fff',
   },
 });
