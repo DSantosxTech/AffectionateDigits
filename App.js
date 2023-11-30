@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 0, 0, 0.7)',
   },
   textoBotao: {
-    fontSize: width * 0.07,
+    fontSize: width * 0.10,
     fontWeight: 'bold',
     color: '#fff',
   },
