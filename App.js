@@ -13,24 +13,28 @@ const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpaci
 
 const { height, width } = Dimensions.get('window');
 
-export default function App() {
+const App = () => {
   const [entrada, setEntrada] = useState('');
   const [resultado, setResultado] = useState('');
-
+  const [expressaoCompleta, setExpressaoCompleta] = useState('');
   const animacaoBotaoPressionado = new Animated.Value(1);
 
   const lidarComPressao = (valor) => {
     if (valor === '=') {
       try {
-        setResultado(eval(entrada).toString());
+        const expressao = entrada.replace(/[^-()\d/*+.]/g, '');
+        setResultado(eval(expressao).toString());
+        setExpressaoCompleta('');
       } catch (error) {
         setResultado('Erro');
       }
     } else if (valor === 'C') {
       setEntrada('');
       setResultado('');
+      setExpressaoCompleta('');
     } else {
       setEntrada((entradaAnterior) => entradaAnterior + valor);
+      setExpressaoCompleta((exprAnterior) => exprAnterior + valor);
     }
   };
 
@@ -86,10 +90,10 @@ export default function App() {
       <View style={styles.container}>
         <StatusBar style="light" />
         <View style={styles.tituloContainer}>
-          <Text style={styles.titulo}>Calculadora do meu Amor💘</Text>
+          <Text style={styles.titulo}>Affectionate digits💘</Text>
         </View>
         <View style={styles.containerResultado}>
-          <Text style={styles.textoEntrada}>{entrada}</Text>
+          <Text style={styles.textoEntrada}>{expressaoCompleta}</Text>
           <Text style={styles.textoResultado}>{resultado}</Text>
         </View>
         <View style={styles.containerBotoes}>
@@ -99,11 +103,13 @@ export default function App() {
             </View>
           ))}
         </View>
-        <Text style={styles.titulo}>Create by: @Devsntosx71</Text>
+        <View style={styles.navbar}>
+          <Text style={styles.navbarTexto}>Create by: @Devsntosx71</Text>
+        </View>
       </View>
     </ImageBackground>
   );
-}
+};
 
 const styles = StyleSheet.create({
   fundo: {
@@ -161,14 +167,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    
     borderRadius: width * 0.05,
-    margin: width * 0.01, // Reduzi a margem
-    padding: width * 0.04, // Aumentei o padding
+    margin: width * 0.01,
+    padding: width * 0.04,
     backgroundColor: 'rgba(255, 105, 180, 0.7)',
   },
   textoBotao: {
+    justifyContent: 'center',
+    alignItems:'center',
     fontSize: width * 0.10,
     color: '#fff',
   },
+  navbar: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 20,
+    alignItems: 'center',
+    marginTop:20,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  navbarTexto: {
+    fontSize: width * 0.05,
+    color: '#fff',
+  },
 });
+
+export default App;
