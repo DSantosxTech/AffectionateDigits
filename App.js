@@ -6,12 +6,14 @@ import {
   Animated,
   Easing,
   Dimensions,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import { StyleSheet, Text, View } from 'react-native';
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
-const { height, width } = Dimensions.get('window');
+const { height, width } = Dimensions.get('screen');
 
 const App = () => {
   const [entrada, setEntrada] = useState('');
@@ -20,21 +22,31 @@ const App = () => {
   const animacaoBotaoPressionado = new Animated.Value(1);
 
   const lidarComPressao = (valor) => {
-    if (valor === '=') {
-      try {
+    try {
+      if (valor === '=') {
         const expressao = entrada.replace(/[^-()\d/*+.]/g, '');
-        setResultado(eval(expressao).toString());
+        const resultadoCalculo = eval(expressao);
+
+        if (isNaN(resultadoCalculo) || !isFinite(resultadoCalculo)) {
+          setResultado('Erro');
+        } else {
+          setResultado(resultadoCalculo.toString());
+        }
+
         setExpressaoCompleta('');
-      } catch (error) {
-        setResultado('Erro');
+      } else if (valor === 'C') {
+        setEntrada('');
+        setResultado('');
+        setExpressaoCompleta('');
+      } else if (valor === '⌫') {
+        setEntrada((entradaAnterior) => entradaAnterior.slice(0, -1));
+        setExpressaoCompleta((exprAnterior) => exprAnterior.slice(0, -1));
+      } else {
+        setEntrada((entradaAnterior) => entradaAnterior + valor);
+        setExpressaoCompleta((exprAnterior) => exprAnterior + valor);
       }
-    } else if (valor === 'C') {
-      setEntrada('');
-      setResultado('');
-      setExpressaoCompleta('');
-    } else {
-      setEntrada((entradaAnterior) => entradaAnterior + valor);
-      setExpressaoCompleta((exprAnterior) => exprAnterior + valor);
+    } catch (error) {
+      setResultado('Erro');
     }
   };
 
@@ -60,6 +72,7 @@ const App = () => {
       key={valor}
       style={[
         styles.botao,
+        valor === '⌫' && styles.botaoApagar,
         estilo,
         {
           transform: [{ scale: animacaoBotaoPressionado }],
@@ -79,14 +92,11 @@ const App = () => {
     ['4', '5', '6', '*'],
     ['1', '2', '3', '-'],
     ['0', '.', '=', '+'],
-    ['C'],
+    ['C', '⌫'],
   ];
 
   return (
-    <ImageBackground
-      source={require('./lib/raju.jpg')}
-      style={styles.fundo}
-    >
+    <ImageBackground source={require('./lib/raju.jpg')} style={styles.fundo}>
       <View style={styles.container}>
         <StatusBar style="light" />
         <View style={styles.tituloContainer}>
@@ -128,6 +138,7 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: width * 0.05,
+    fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
   },
@@ -141,12 +152,12 @@ const styles = StyleSheet.create({
     marginBottom: width * 0.1,
   },
   textoEntrada: {
-    fontSize: width * 0.09,
+    fontSize: width * 0.08,
     color: '#fff',
     textAlign: 'right',
   },
   textoResultado: {
-    fontSize: width * 0.1,
+    fontSize: width * 0.10,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'right',
@@ -167,29 +178,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: width * 0.05,
+    borderRadius: width * 0.02,
     margin: width * 0.01,
-    padding: width * 0.04,
-    backgroundColor: 'rgba(255, 105, 180, 0.7)',
+    padding: width * 0.03,
+    backgroundColor: 'rgba(255, 182, 193, 0.8)',
+  },
+  botaoApagar: {
+    backgroundColor: 'rgba(255, 0, 0, 0.7)',
   },
   textoBotao: {
-    justifyContent: 'center',
-    alignItems:'center',
-    fontSize: width * 0.10,
+    fontSize: width * 0.07,
+    fontWeight: 'bold',
     color: '#fff',
   },
   navbar: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(255, 182, 193, 0.8)',
     padding: 20,
     alignItems: 'center',
-    marginTop:20,
+    marginTop: 20,
     bottom: 0,
     left: 0,
     right: 0,
   },
   navbarTexto: {
-    fontSize: width * 0.05,
-    color: '#fff',
+    fontSize: width * 0.035,
+    fontWeight: 'bold',
+    color: 'black',
   },
 });
 
