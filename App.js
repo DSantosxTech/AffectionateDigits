@@ -13,12 +13,26 @@ import {
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
-const { height, width } = Dimensions.get('screen');
+
+
+const BotaoCalculadora = ({ valor, onPress, estilo = {} }) => (
+  <AnimatedTouchableOpacity
+    style={[
+      styles.botao,
+      valor === '⌫' && styles.botaoApagar,
+      estilo,
+    ]}
+    onPress={onPress}
+  >
+    <Text style={styles.textoBotao}>{valor}</Text>
+  </AnimatedTouchableOpacity>
+);
 
 const App = () => {
   const [entrada, setEntrada] = useState('');
   const [resultado, setResultado] = useState('');
   const [expressaoCompleta, setExpressaoCompleta] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const animacaoBotaoPressionado = new Animated.Value(1);
 
   const lidarComPressao = (valor) => {
@@ -42,8 +56,15 @@ const App = () => {
         setEntrada((entradaAnterior) => entradaAnterior.slice(0, -1));
         setExpressaoCompleta((exprAnterior) => exprAnterior.slice(0, -1));
       } else {
-        setEntrada((entradaAnterior) => entradaAnterior + valor);
-        setExpressaoCompleta((exprAnterior) => exprAnterior + valor);
+        if (entrada.length + valor.length <= 38) {
+          setEntrada((entradaAnterior) => entradaAnterior + valor);
+          setExpressaoCompleta((exprAnterior) => exprAnterior + valor);
+        } else {
+          setErrorMessage('Maximum character limit reached');
+          setTimeout(() => {
+            setErrorMessage('');
+          }, 3000);
+        }
       }
     } catch (error) {
       setResultado('Erro');
@@ -68,23 +89,15 @@ const App = () => {
   };
 
   const renderizarBotao = (valor, estilo = {}) => (
-    <AnimatedTouchableOpacity
+    <BotaoCalculadora
       key={valor}
-      style={[
-        styles.botao,
-        valor === '⌫' && styles.botaoApagar,
-        estilo,
-        {
-          transform: [{ scale: animacaoBotaoPressionado }],
-        },
-      ]}
+      valor={valor}
       onPress={() => {
         lidarComPressao(valor);
         pressionarBotao();
       }}
-    >
-      <Text style={styles.textoBotao}>{valor}</Text>
-    </AnimatedTouchableOpacity>
+      estilo={estilo}
+    />
   );
 
   const botoes = [
@@ -105,6 +118,9 @@ const App = () => {
         <View style={styles.containerResultado}>
           <Text style={styles.textoEntrada}>{expressaoCompleta}</Text>
           <Text style={styles.textoResultado}>{resultado}</Text>
+          {errorMessage !== '' && (
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          )}
         </View>
         <View style={styles.containerBotoes}>
           {botoes.map((linha, indiceLinha) => (
@@ -114,7 +130,7 @@ const App = () => {
           ))}
         </View>
         <View style={styles.navbar}>
-          <Text style={styles.navbarTexto}>Create by: @Devsntosx71</Text>
+          <Text style={styles.navbarTexto}>Criado por: @Devsntosx71</Text>
         </View>
       </View>
     </ImageBackground>
@@ -124,7 +140,7 @@ const App = () => {
 const styles = StyleSheet.create({
   fundo: {
     flex: 1,
-    resizeMode: 'cover',
+    resizeMode: 'center',
     justifyContent: 'center',
   },
   container: {
@@ -133,11 +149,11 @@ const styles = StyleSheet.create({
   tituloContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: height * 0.1,
-    margin: width * 0.1,
+    padding: 50,
+    margin: 50,
   },
   titulo: {
-    fontSize: width * 0.05,
+    fontSize: 20,
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
@@ -145,26 +161,28 @@ const styles = StyleSheet.create({
   containerResultado: {
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
-    padding: width * 0.05,
+    padding: 10,
     backgroundColor: 'rgba(255, 182, 193, 0.8)',
-    borderRadius: width * 0.02,
-    marginHorizontal: width * 0.1,
-    marginBottom: width * 0.1,
+    borderRadius: 7,
+    borderWidth: 3,
+    borderColor: '#ccc',
+    marginHorizontal: 30,
+    marginBottom: 0,
   },
   textoEntrada: {
-    fontSize: width * 0.08,
+    fontSize: 30,
     color: '#fff',
     textAlign: 'right',
   },
   textoResultado: {
-    fontSize: width * 0.10,
+    fontSize: 40,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'right',
   },
   containerBotoes: {
     flex: 3,
-    marginHorizontal: width * 0.1,
+    marginHorizontal: 28,
   },
   linha: {
     flex: 1,
@@ -173,21 +191,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   botao: {
-    flex: 1,
+    flex: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#ccc',
-    borderRadius: width * 0.05,
-    margin: width * 0.01,
-    padding: width * 0.04,
+    borderRadius: 15,
+    margin: 2,
+    padding: 20,
     backgroundColor: 'rgba(255, 182, 193, 0.8)',
   },
   botaoApagar: {
-    backgroundColor: 'rgba(255, 0, 0, 0.7)',
+    backgroundColor: 'rgba(255, 0, 0, 0.8)',
   },
   textoBotao: {
-    fontSize: width * 0.05,
+    fontSize: 35,
     fontWeight: 'bold',
     color: '#fff',
   },
@@ -201,9 +219,15 @@ const styles = StyleSheet.create({
     right: 0,
   },
   navbarTexto: {
-    fontSize: width * 0.035,
+    fontSize: 15,
     fontWeight: 'bold',
     color: 'black',
+  },
+  errorMessage: {
+    fontSize: 20,
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
 
