@@ -5,7 +5,7 @@ Bem-vindo à Calculadora Personalizada desenvolvida em React Native, pensada com
 ### Imagem aplicativo
 
 ## Tela Calculadora
-<img src="https://github.com/DevSntosx71/AffectionateDigits/blob/main/lib/TelaCalculadora.jpeg?raw=true" width="400">
+<img src="https://github.com/DevSntosx71/AffectionateDigits/blob/main/lib/TelaCalculadora.jpeg?raw=true" width="300">
 
 
 ### Funcionalidades Principais:
