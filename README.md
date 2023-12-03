@@ -2,6 +2,11 @@
 
 Bem-vindo à Calculadora Personalizada desenvolvida em React Native, pensada com carinho para a minha namorada. Esta aplicação visa fornecer uma experiência simples e eficiente para realizar cálculos básicos.
 
+### Imagem aplicativo
+
+## Tela Calculadora
+![circuito](https://github.com/DevSntosx71/AffectionateDigits/blob/main/lib/TelaCalculadora.jpeg?raw=true)
+
 ### Funcionalidades Principais:
 
 - **Interface Intuitiva:** Design amigável para facilitar a usabilidade.
